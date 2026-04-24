@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         KUBECONFIG = '/var/lib/jenkins/.kube/config'
-        AWS_DEFAULT_REGION = 'ap-southeast-1'
         IMAGE_NAME = 'daneshkabade45/frontend'
         IMAGE_TAG = "${BUILD_NUMBER}"
         DEPLOYMENT_NAME = 'frontend-deployment'
@@ -28,13 +27,15 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'docker-creds',
+                    credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
                     sh '''
                     echo $PASS | docker login -u $USER --password-stdin
                     docker push $IMAGE_NAME:$IMAGE_TAG
+                    docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+                    docker push $IMAGE_NAME:latest
                     docker logout
                     '''
                 }
