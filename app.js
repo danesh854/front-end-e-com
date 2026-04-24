@@ -1,4 +1,4 @@
-fetch("http://backend-service:3000/products")
+fetch("http://backend-service.backend:3000/products")
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById("products");
